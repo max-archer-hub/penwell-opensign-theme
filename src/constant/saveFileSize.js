@@ -1,8 +1,9 @@
 import axios from "axios";
 import { serverUrl_fn } from "./appinfo";
-const parseAppId = process.env.REACT_APP_APPID
-  ? process.env.REACT_APP_APPID
-  : "opensign";
+// PW-014e bugfix (2026-07-30): see App.jsx -- process.env.REACT_APP_APPID is
+// never populated by Vite; import.meta.env.VITE_APPID must come first.
+const parseAppId =
+  import.meta.env.VITE_APPID || process.env.REACT_APP_APPID || "opensign";
 const serverUrl = serverUrl_fn();
 const commonheader = {
   "Content-Type": "application/json",

@@ -11,7 +11,9 @@ export function serverUrl_fn() {
 }
 export const appInfo = {
   applogo: logo,
-  appId: process.env.REACT_APP_APPID ? process.env.REACT_APP_APPID : "opensign",
+  // PW-014e bugfix (2026-07-30): see App.jsx -- process.env.REACT_APP_APPID
+  // is never populated by Vite; import.meta.env.VITE_APPID must come first.
+  appId: import.meta.env.VITE_APPID || process.env.REACT_APP_APPID || "opensign",
   baseUrl: serverUrl_fn(),
   defaultRole: "contracts_User",
   fev_Icon:

@@ -49,7 +49,15 @@ function App() {
   const [isloading, setIsLoading] = useState(true);
   useEffect(() => {
     // initialize creds
-    const id = process.env.REACT_APP_APPID ?? "opensign";
+    // PW-014e bugfix (2026-07-30): process.env.REACT_APP_APPID is a Create
+    // React App convention Vite never populates -- this line unconditionally
+    // overwrote localStorage.parseAppId with the wrong hardcoded "opensign"
+    // default on EVERY app mount, silently breaking any component that reads
+    // the app id from localStorage instead of the Parse SDK's own config
+    // (index.jsx correctly uses import.meta.env.VITE_APPID). Found live via
+    // a 403 {"error":"unauthorized"} on getDocument during the signing-flow
+    // test, with x-parse-application-id:opensign in the actual request.
+    const id = import.meta.env.VITE_APPID || process.env.REACT_APP_APPID || "opensign";
     localStorage.setItem("parseAppId", id);
     localStorage.setItem("baseUrl", `${serverUrl_fn()}/`);
     hideUpgradeProgress();
